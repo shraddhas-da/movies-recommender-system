@@ -43,11 +43,8 @@ def get_session():
         }
     )
     return session
-
-
-# =============================================================================
+    
 # Data loading
-# =============================================================================
 @st.cache_data
 def load_data():
     movies = pickle.load(open("movies.pkl", "rb"))
@@ -79,9 +76,8 @@ sentiment_vectorizer, sentiment_model = load_sentiment_model()
 SENTIMENT_AVAILABLE = sentiment_vectorizer is not None and sentiment_model is not None
 
 
-# =============================================================================
-# TMDB helpers
-# =============================================================================
+
+# TMDB Helpers
 @st.cache_data(ttl=3600, show_spinner=False)
 def fetch_poster(movie_id, movie_title):
     """ID -> Search -> Placeholder."""
@@ -164,10 +160,8 @@ def fetch_movie_details(movie_id):
 
     return details, None
 
-
-# =============================================================================
 # IMDB review scraping + sentiment
-# =============================================================================
+
 @st.cache_data(ttl=3600, show_spinner=False)
 def get_movie_reviews(movie_id, max_reviews=10):
     """Fetches reviews from TMDB's own review endpoint.
@@ -209,10 +203,8 @@ def predict_sentiment(review_text):
     pred = sentiment_model.predict(vec)[0]
     return "Positive" if pred == 1 else "Negative"
 
-
-# =============================================================================
 # Recommendation logic
-# =============================================================================
+
 def recommend(movie_title):
     movie_index = movies[movies["title"] == movie_title].index[0]
     distances = similarity[movie_index]
@@ -226,10 +218,7 @@ def recommend(movie_title):
         posters.append(fetch_poster(m_data.movie_id, m_data.title))
     return names, posters, ids
 
-
-# =============================================================================
 # Session state / navigation
-# =============================================================================
 st.session_state.setdefault("page", "home")
 st.session_state.setdefault("recs", None)          # (names, posters, ids) from home search
 st.session_state.setdefault("selected_movie_id", None)
@@ -258,10 +247,7 @@ def render_movie_grid(names, posters, ids, key_prefix):
             if st.button("View Details", key=f"{key_prefix}_{ids[idx]}_{idx}"):
                 go_to_details(ids[idx], names[idx])
 
-
-# =============================================================================
 # Home page
-# =============================================================================
 def render_home():
     st.title("🎬 Movie Recommendation System")
 
@@ -277,10 +263,7 @@ def render_home():
         st.subheader("Recommended for you")
         render_movie_grid(names, posters, ids, key_prefix="home")
 
-
-# =============================================================================
 # Details page
-# =============================================================================
 def render_details():
     movie_id = st.session_state.selected_movie_id
     movie_title = st.session_state.selected_movie_title
@@ -321,7 +304,7 @@ def render_details():
         st.markdown("### Director")
         st.write(details.get("director", "Unknown"))
 
-    # ---- Starcast ----
+    # Starcast
     cast = details.get("cast") or []
     if cast:
         st.markdown("---")
@@ -333,7 +316,7 @@ def render_details():
                 st.image(photo, use_container_width=True)
                 st.caption(f"**{person.get('name', '')}**\n\n{person.get('character', '')}")
 
-    # ---- Recommendations from this movie ----
+    # Recommendations from this movie 
     st.markdown("---")
     st.markdown("### Recommendations")
     if movie_title in movies["title"].values:
@@ -380,9 +363,7 @@ def render_details():
             f"({pos_count / len(reviews) * 100:.0f}%).")
 
 
-# =============================================================================
 # Router
-# =============================================================================
 if st.session_state.page == "home":
     render_home()
 else:
