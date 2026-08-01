@@ -7,7 +7,7 @@ import streamlit as st
 
 st.set_page_config(page_title="Movie Recommender", layout="wide")
 
-API_KEY = "8265bd1679663a7ea12ac168da84d2e8"  # TMDB API key (same one from the original script)
+API_KEY = "8265bd1679663a7ea12ac168da84d2e7"  # TMDB API key (same one from the original script)
 TMDB_BASE = "https://api.themoviedb.org/3"
 POSTER_BASE = "https://image.tmdb.org/t/p/w500"
 PROFILE_BASE = "https://image.tmdb.org/t/p/w200"
