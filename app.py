@@ -1,6 +1,5 @@
 import pickle
 import urllib.parse
-
 import requests
 from requests.adapters import HTTPAdapter, Retry
 import streamlit as st
